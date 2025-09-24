@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Crunch
 
 Discover restaurants that align with your dietary preferences — avoid seed oils, find gluten-free spots, and choose places that match your lifestyle.
@@ -162,3 +163,6 @@ Tips:
 ## License
 
 MIT License © 2025 Crunch
+=======
+# crunch-app
+>>>>>>> d1786c0b2b936049a49bffa96dafa3b9a2cc0f35
