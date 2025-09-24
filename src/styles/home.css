@@ -101,10 +101,10 @@ body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI
 
 /* Show nav-center on mobile at ≤480px with constrained width - hide search, show select and filter */
 @media screen and (max-width: 480px) {
-  .nav-center { display: flex !important; flex: 1 1 auto; min-width: 0; max-width: none; margin: 0 .65rem; gap: .75rem; justify-content: center; }
+  .nav-center { display: flex !important; flex: 1 1 auto; min-width: 0; max-width: none; margin: 0 .65rem; gap: .5rem; justify-content: space-between; }
   .nav-center form { display: none !important; }
-  .nav-center .select { min-width: 4rem; max-width: 8.5rem; width: auto; font-size: .8rem; flex: 0 1 auto; background-position: right .6rem center; padding-right: 1.6rem; }
-  .nav-center .btn { padding: 0 .4rem; font-size: .8rem; white-space: nowrap; flex-shrink: 0; }
+  .nav-center .select { min-width: 5rem; max-width: 10rem; width: auto; font-size: .8rem; flex: 1 1 auto; background-position: right .6rem center; padding-right: 1.6rem; }
+  .nav-center .btn { padding: 0 .4rem; font-size: .8rem; white-space: nowrap; flex-shrink: 0; margin-left: auto; }
   .nav-toggle { display: inline-flex !important; flex-shrink: 0; }
 }
 
