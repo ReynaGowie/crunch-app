@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { Search, MapPin, Clock, Star, Check, AlertTriangle, Plus, Filter, X, ExternalLink, Instagram, Settings, Calendar, ChevronDown, MapPinIcon, TrendingUp, User, Phone, Mail, Facebook, Twitter, Youtube, Globe, Link as LinkIcon, Menu } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Search, MapPin, Clock, Star, Check, AlertTriangle, Plus, Filter, X, ExternalLink, Instagram, Settings, Calendar, ChevronDown, ChevronUp, MapPinIcon, TrendingUp, User, Phone, Mail, Facebook, Twitter, Youtube, Globe, Link as LinkIcon, Menu } from 'lucide-react';
 import { supabase } from './src/lib/supabaseClient';
 import mapboxgl from 'mapbox-gl';
 import './src/styles/home.css';
@@ -447,9 +448,9 @@ const Footer = ({ onNavigate, onSuggest, cities = [], restaurantsCount = 0, veri
           <li className="muted small">Last updated: {new Date().toLocaleDateString()}</li>
         </ul>
       </div>
-    </div>
-    <div className="footer-bottom">  Crunch. All rights reserved.</div>
-  </footer>
+  </div>
+  <div className="footer-bottom">  &copy; 2025 Crunch. All rights reserved.</div>
+</footer>
 );
 
 // Header Component (single source of truth)
@@ -481,6 +482,22 @@ const Header = ({
   onOpenFilters: () => void;
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMobileOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevRootOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevBodyOverflow;
+      document.documentElement.style.overflow = prevRootOverflow;
+    };
+  }, [mobileOpen]);
   return (
   <header className="nav-bar">
     <div className="container-safe nav-row">
@@ -544,44 +561,61 @@ const Header = ({
         <Menu width={18} height={18} />
       </button>
     </div>
-    {mobileOpen && (
-      <div className="mobile-menu" role="dialog" aria-label="Mobile menu">
-        <div className="menu-grid">
-          <form onSubmit={(e) => { onSearchSubmit(e); setMobileOpen(false); }}>
-            <div className="field">
-              <Search className="icon-left" width={18} height={18} />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={onSearchChange}
-                className="input with-icon"
-                placeholder="Search"
-              />
+    {mobileOpen && createPortal(
+      (
+        <div className="mobile-menu-root" onClick={() => setMobileOpen(false)}>
+          <div className="mobile-menu-overlay" />
+          <div className="mobile-menu" role="dialog" aria-label="Mobile menu" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="btn light nav-toggle"
+              aria-label="Close menu"
+              onClick={() => setMobileOpen(false)}
+              style={{ position: 'absolute', top: 'calc(env(safe-area-inset-top) + .5rem)', right: '.5rem', zIndex: 3 }}
+            >
+              <X width={18} height={18} />
+            </button>
+            <div className="menu-grid" style={{ gap: 0 }}>
+              <div className="stack-tight">
+                <form onSubmit={(e) => { onSearchSubmit(e); setMobileOpen(false); }} style={{ margin: 0 }}>
+                  <div className="field">
+                    <Search className="icon-left" width={18} height={18} />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={onSearchChange}
+                      className="input with-icon"
+                      placeholder="Search"
+                    />
+                  </div>
+                </form>
+                <select
+                  value={selectedCity}
+                  onChange={(e) => { onCityChange(e.target.value); }}
+                  className="select"
+                  aria-label="City"
+                  style={{ margin: 0 }}
+                >
+                  {cityNames.map((c: string) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+                <button className="btn primary" style={{ margin: 0 }} onClick={() => { onOpenFilters(); setMobileOpen(false); }}><Filter width={16} height={16} /> Filters</button>
+              </div>
+              <div className="menu-actions">
+                <button className="btn light" onClick={() => { onNavigate('results'); setMobileOpen(false); }}>Browse</button>
+                <button className="btn light" onClick={() => { onNavigate('home'); setMobileOpen(false); }}>Home</button>
+                <button className="btn light" onClick={() => { onNavigate('about'); setMobileOpen(false); }}>About</button>
+                <button className="btn light" onClick={() => { onNavigate('contact'); setMobileOpen(false); }}>Contact</button>
+                <button className="btn secondary" onClick={() => { onAddRestaurant(); setMobileOpen(false); }}><Plus width={16} height={16} /> Suggest</button>
+                {isAdmin && (
+                  <button className="btn light" onClick={() => { onAdminClick(); setMobileOpen(false); }}><Settings width={16} height={16} /> Admin</button>
+                )}
+              </div>
             </div>
-          </form>
-          <select
-            value={selectedCity}
-            onChange={(e) => { onCityChange(e.target.value); }}
-            className="select"
-            aria-label="City"
-          >
-            {cityNames.map((c: string) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
-          <div className="menu-actions">
-            <button className="btn primary" onClick={() => { onOpenFilters(); setMobileOpen(false); }}><Filter width={16} height={16} /> Filters</button>
-            <button className="btn light" onClick={() => { onNavigate('results'); setMobileOpen(false); }}>Browse</button>
-            <button className="btn light" onClick={() => { onNavigate('home'); setMobileOpen(false); }}>Home</button>
-            <button className="btn light" onClick={() => { onNavigate('about'); setMobileOpen(false); }}>About</button>
-            <button className="btn light" onClick={() => { onNavigate('contact'); setMobileOpen(false); }}>Contact</button>
-            <button className="btn secondary" onClick={() => { onAddRestaurant(); setMobileOpen(false); }}><Plus width={16} height={16} /> Suggest</button>
-            {isAdmin && (
-              <button className="btn light" onClick={() => { onAdminClick(); setMobileOpen(false); }}><Settings width={16} height={16} /> Admin</button>
-            )}
           </div>
         </div>
-      </div>
+      ),
+      document.body
     )}
   </header>
   );
@@ -1428,9 +1462,10 @@ const CrunchApp = () => {
     }, 3500);
   };
 
-  // Scroll-to-top visibility
+  // Scroll-to-top visibility (show after minimal scroll)
   useEffect(() => {
-    const onScroll = () => setShowScrollTop(window.scrollY > 600);
+    const threshold = 120; // px
+    const onScroll = () => setShowScrollTop(window.scrollY > threshold);
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
@@ -2069,12 +2104,6 @@ const CrunchApp = () => {
           </div>
         )}
       </main>
-      {/* Mobile bottom bar */}
-      <div className="mobile-bottom-bar" role="navigation" aria-label="Mobile quick actions">
-        <button className="btn light" onClick={() => navigate('home')}>Home</button>
-        <button className="btn light" onClick={() => navigate('results')}>Browse</button>
-        <button className="btn primary" onClick={() => setShowFilterModal(true)}><Filter width={16} height={16} /> Filters</button>
-      </div>
 
       {/* Filter Modal */}
       {showFilterModal && (
@@ -2225,12 +2254,12 @@ const CrunchApp = () => {
               {/* Photos & Menu */}
               <div>
                 <div className="h2" style={{ margin: 0, fontSize: '1.1rem', textDecoration: 'underline' }}>Photos & Menu</div>
-                <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap', marginTop: '.4rem' }}>
+                <div className="gallery-scroll" style={{ marginTop: '.4rem' }}>
                   {selectedRestaurant.imageUrls && selectedRestaurant.imageUrls.length > 0 && (
-                    <div style={{ display: 'flex', gap: '.4rem', flexWrap: 'wrap' }}>
+                    <div className="gallery-track">
                       {selectedRestaurant.imageUrls.slice(0, 6).map((url, idx) => (
-                        <a key={`${url}-${idx}`} href={url} target="_blank" rel="noopener noreferrer" className="skeleton" style={{ display: 'block', width: 92, height: 64, borderRadius: '.5rem', overflow: 'hidden' }}>
-                          <img src={url} alt={`Photo ${idx+1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <a key={`${url}-${idx}`} href={url} target="_blank" rel="noopener noreferrer" className="gallery-thumb skeleton">
+                          <img src={url} alt={`Photo ${idx+1}`} />
                         </a>
                       ))}
                     </div>
@@ -2401,6 +2430,31 @@ const CrunchApp = () => {
           </div>
         ))}
       </div>
+
+      {/* Back to Top (results view) */}
+      {currentView === 'results' && showScrollTop && (
+        <button
+          className="back-to-top"
+          aria-label="Back to top"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          style={{
+            position: 'fixed',
+            right: 'calc(0.85rem + env(safe-area-inset-right))',
+            bottom: 'calc(0.85rem + env(safe-area-inset-bottom))',
+            height: '2.9rem',
+            width: '2.9rem',
+            display: 'grid',
+            placeItems: 'center',
+            borderRadius: '999px',
+            background: '#111827',
+            color: '#fff',
+            boxShadow: '0 10px 20px -12px rgba(0,0,0,.4)',
+            zIndex: 70
+          }}
+        >
+          <ChevronUp width={18} height={18} />
+        </button>
+      )}
     </div>
   );
 }
