@@ -2111,10 +2111,22 @@ const CrunchApp = () => {
           role="dialog"
           aria-modal="true"
           aria-label="Filter restaurants"
-          style={{ position: 'fixed', inset: 0, background: 'rgba(17,24,39,0.45)', zIndex: 60, display: 'grid', placeItems: 'center', padding: '1rem' }}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(17,24,39,0.45)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem' }}
           onClick={() => setShowFilterModal(false)}
         >
-          <div className="card narrow filter-panel" style={{ maxHeight: '85vh', overflow: 'auto', padding: '1rem', width: '100%', maxWidth: '48rem' }} onClick={(e) => e.stopPropagation()}>
+          <div 
+            className="card narrow filter-panel" 
+            style={{ 
+              maxHeight: '95vh', 
+              overflow: 'auto', 
+              padding: '1rem', 
+              width: '100%', 
+              maxWidth: '48rem',
+              margin: '0 auto',
+              borderRadius: '1rem'
+            }} 
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="section-head" style={{ marginTop: 0 }}>
               <h3 className="h2">Filter by Dietary Restrictions</h3>
               <div className="brand-actions">
