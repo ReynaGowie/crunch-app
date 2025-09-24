@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { Search, MapPin, Clock, Star, Check, AlertTriangle, Plus, Filter, X, ExternalLink, Instagram, Settings, Calendar, ChevronDown, MapPinIcon, TrendingUp, User, Phone, Mail, Facebook, Twitter, Youtube, Globe, Link as LinkIcon } from 'lucide-react';
+import { Search, MapPin, Clock, Star, Check, AlertTriangle, Plus, Filter, X, ExternalLink, Instagram, Settings, Calendar, ChevronDown, MapPinIcon, TrendingUp, User, Phone, Mail, Facebook, Twitter, Youtube, Globe, Link as LinkIcon, Menu } from 'lucide-react';
 import { supabase } from './src/lib/supabaseClient';
 import mapboxgl from 'mapbox-gl';
 import './src/styles/home.css';
@@ -479,7 +479,9 @@ const Header = ({
   onNavigate: (view: 'home' | 'results' | 'about' | 'contact' | 'suggest' | 'admin') => void;
   currentView: 'home' | 'results' | 'about' | 'contact' | 'suggest' | 'admin';
   onOpenFilters: () => void;
-}) => (
+}) => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  return (
   <header className="nav-bar">
     <div className="container-safe nav-row">
       <div
@@ -495,7 +497,7 @@ const Header = ({
         <div className="brand-name">Crunch</div>
       </div>
 
-      <div style={{ flex: 1, maxWidth: 1200, padding: '0 .75rem', display: 'flex', alignItems: 'center', gap: '.75rem' }}>
+      <div className="nav-center" style={{ flex: 1, maxWidth: 1200, padding: '0 .75rem', display: 'flex', alignItems: 'center', gap: '.75rem' }}>
         <form onSubmit={onSearchSubmit} style={{ flex: 1, minWidth: 0 }}>
           <div className="field" style={{ width: '100%' }}>
             <Search className="icon-left" width={18} height={18} />
@@ -533,9 +535,57 @@ const Header = ({
           <button className={`btn link nav-link ${currentView === 'admin' ? 'nav-active' : ''}`} onClick={onAdminClick}><Settings width={16} height={16} /> Admin</button>
         )}
       </div>
+
+      <button
+        className="btn light nav-toggle"
+        aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+        onClick={() => setMobileOpen(!mobileOpen)}
+      >
+        <Menu width={18} height={18} />
+      </button>
     </div>
+    {mobileOpen && (
+      <div className="mobile-menu" role="dialog" aria-label="Mobile menu">
+        <div className="menu-grid">
+          <form onSubmit={(e) => { onSearchSubmit(e); setMobileOpen(false); }}>
+            <div className="field">
+              <Search className="icon-left" width={18} height={18} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={onSearchChange}
+                className="input with-icon"
+                placeholder="Search"
+              />
+            </div>
+          </form>
+          <select
+            value={selectedCity}
+            onChange={(e) => { onCityChange(e.target.value); }}
+            className="select"
+            aria-label="City"
+          >
+            {cityNames.map((c: string) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+          <div className="menu-actions">
+            <button className="btn primary" onClick={() => { onOpenFilters(); setMobileOpen(false); }}><Filter width={16} height={16} /> Filters</button>
+            <button className="btn light" onClick={() => { onNavigate('results'); setMobileOpen(false); }}>Browse</button>
+            <button className="btn light" onClick={() => { onNavigate('home'); setMobileOpen(false); }}>Home</button>
+            <button className="btn light" onClick={() => { onNavigate('about'); setMobileOpen(false); }}>About</button>
+            <button className="btn light" onClick={() => { onNavigate('contact'); setMobileOpen(false); }}>Contact</button>
+            <button className="btn secondary" onClick={() => { onAddRestaurant(); setMobileOpen(false); }}><Plus width={16} height={16} /> Suggest</button>
+            {isAdmin && (
+              <button className="btn light" onClick={() => { onAdminClick(); setMobileOpen(false); }}><Settings width={16} height={16} /> Admin</button>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
   </header>
-);
+  );
+};
 
 // Contact Form Component
 const ContactForm: React.FC<{ onNotify?: (message: string, type: 'success' | 'error' | 'warning' | 'info') => void }> = ({ onNotify }) => {
@@ -2019,6 +2069,12 @@ const CrunchApp = () => {
           </div>
         )}
       </main>
+      {/* Mobile bottom bar */}
+      <div className="mobile-bottom-bar" role="navigation" aria-label="Mobile quick actions">
+        <button className="btn light" onClick={() => navigate('home')}>Home</button>
+        <button className="btn light" onClick={() => navigate('results')}>Browse</button>
+        <button className="btn primary" onClick={() => setShowFilterModal(true)}><Filter width={16} height={16} /> Filters</button>
+      </div>
 
       {/* Filter Modal */}
       {showFilterModal && (
@@ -2029,7 +2085,7 @@ const CrunchApp = () => {
           style={{ position: 'fixed', inset: 0, background: 'rgba(17,24,39,0.45)', zIndex: 60, display: 'grid', placeItems: 'center', padding: '1rem' }}
           onClick={() => setShowFilterModal(false)}
         >
-          <div className="card narrow" style={{ maxHeight: '85vh', overflow: 'auto', padding: '1rem', width: '100%', maxWidth: '48rem' }} onClick={(e) => e.stopPropagation()}>
+          <div className="card narrow filter-panel" style={{ maxHeight: '85vh', overflow: 'auto', padding: '1rem', width: '100%', maxWidth: '48rem' }} onClick={(e) => e.stopPropagation()}>
             <div className="section-head" style={{ marginTop: 0 }}>
               <h3 className="h2">Filter by Dietary Restrictions</h3>
               <div className="brand-actions">
