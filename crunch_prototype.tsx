@@ -533,7 +533,7 @@ const Header = ({
           onChange={(e) => onCityChange(e.target.value)}
           className="select"
           aria-label="City"
-          style={{ height: '3rem', width: 'auto', minWidth: '9.5rem' }}
+          style={{ height: '3rem', width: 'auto' }}
         >
           {cityNames.map((c: string) => (
             <option key={c} value={c}>{c}</option>
@@ -2111,7 +2111,7 @@ const CrunchApp = () => {
           role="dialog"
           aria-modal="true"
           aria-label="Filter restaurants"
-          style={{ position: 'fixed', inset: 0, background: 'rgba(17,24,39,0.45)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem' }}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(17,24,39,0.45)', zIndex: 60, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '0.5rem', paddingTop: '4rem' }}
           onClick={() => setShowFilterModal(false)}
         >
           <div 
