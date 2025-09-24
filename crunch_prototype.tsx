@@ -2127,8 +2127,28 @@ const CrunchApp = () => {
             }} 
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="section-head" style={{ marginTop: 0 }}>
-              <h3 className="h2">Filter by Dietary Restrictions</h3>
+            <div className="section-head" style={{ marginTop: 0, position: 'relative', paddingRight: '3rem' }}>
+              <h3 className="h2" style={{ paddingRight: '1rem' }}>Filter by Dietary Restrictions</h3>
+              <button
+                className="btn light"
+                onClick={() => setShowFilterModal(false)}
+                aria-label="Close filters"
+                style={{
+                  position: 'absolute',
+                  top: '0',
+                  right: '0',
+                  width: '2.5rem',
+                  height: '2.5rem',
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '50%',
+                  flexShrink: 0
+                }}
+              >
+                <X width={18} height={18} />
+              </button>
               <div className="brand-actions">
                 <button className="btn light" onClick={() => { clearFilters(); }}>Clear</button>
                 <button className="btn primary" onClick={() => { setShowFilterModal(false); navigate('results'); }}>Apply</button>
