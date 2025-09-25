@@ -4,7 +4,7 @@ Discover restaurants that align with your dietary preferences — avoid seed oil
 
 Crunch is a modern Vite + React app that connects people with ingredient-conscious restaurants, featuring a clean, responsive UI and a growing, community-driven directory.
 
-Test the web-app here: https://crunch-liart.vercel.app/#/home
+Test the web app here: https://crunch-liart.vercel.app/#/home
 
 ## Overview
 
@@ -14,7 +14,7 @@ Crunch helps you:
 - Suggest new restaurants and contact the team.
 - Browse a beautiful, mobile-friendly interface with quick loading states and accessible controls.
 
-The app is powered by Supabase for data and auth, and Mapbox (optional) for maps.
+The app is powered by Supabase for data and auth.
 
 ## Features
 
@@ -37,13 +37,11 @@ The app is powered by Supabase for data and auth, and Mapbox (optional) for maps
   Keyboard-friendly focus-visible outlines, semantic markup, and mobile-first layout.
 
 - **Delightful UX**
-  Loading skeletons, toast notifications, and consistent green-brand details across the app.
+  Loading skeletons, toast notifications, and consistent green brand details across the app.
 
 - **Hash-based navigation**
   Client-side routing via URL hash for simple deploys (no extra router dependency required).
 
-- **Admin (scaffolded)**
-  Placeholder view for future admin workflows.
 
 ## How It Works
 
@@ -53,7 +51,6 @@ The app is powered by Supabase for data and auth, and Mapbox (optional) for maps
     - `pending`: user-submitted suggestions pending review
     - `newsletter_subscriptions`: email subscriptions
     - `contact_messages`: messages from the contact form
-    - `users`: optional roles (e.g., admin)
   - Client is initialized in `src/lib/supabaseClient.ts` using `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
   - Service-role keys are never used in the client. Use serverless functions if you need privileged operations.
 
@@ -75,14 +72,12 @@ The app is powered by Supabase for data and auth, and Mapbox (optional) for maps
 - **Styling**: Custom CSS (single design system in `src/styles/home.css`)
 - **Data & Auth**: Supabase (`@supabase/supabase-js`)
 - **Icons**: `lucide-react`
-- **Maps (optional)**: Mapbox GL
 
 ## Running Locally
 
 Prerequisites:
 - Node.js 18+
 - A Supabase project (URL + anon key)
-- (Optional) Mapbox token
 
 1) Clone and install
 
@@ -141,8 +136,6 @@ crunch-app/
 - Ensure environment variables are configured in your hosting platform (as `VITE_*` build-time variables).
 
 ## Screenshots
-
-Place your screenshots under `public/screenshots/` and ensure the filenames match the references below.
 
 - **Home**  
   ![Home](public/screenshots/home.png)
