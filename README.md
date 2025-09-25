@@ -4,6 +4,8 @@ Discover restaurants that align with your dietary preferences — avoid seed oil
 
 Crunch is a modern Vite + React app that connects people with ingredient-conscious restaurants, featuring a clean, responsive UI and a growing, community-driven directory.
 
+Test the web-app here: https://crunch-liart.vercel.app/#/home
+
 ## Overview
 
 Crunch helps you:
